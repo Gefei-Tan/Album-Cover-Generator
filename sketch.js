@@ -1,14 +1,3 @@
-// Copyright (c) 2019 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-/* ===
-ml5 Example
-Webcam Image Classification using a pre-trained customized model and p5.js
-This example uses p5 preload function to create the classifier
-=== */
-
 // Classifier Variable
 let classifier;
 // Model URL
@@ -16,7 +5,6 @@ let imageModelURL = 'https://teachablemachine.withgoogle.com/models/_6AZWTN_r/';
 let imageModelGenre = 'https://teachablemachine.withgoogle.com/models/quZz9LyuP/';
 // Video
 let video;
-let flippedVideo;
 // To store the classification
 let label = "loading...";
 let img_not;
@@ -30,6 +18,7 @@ let cuttedFeed;
 let buttonCreate;
 let buttonAgain;
 let filterParam = false;
+let flippedVideo;
 
 // Load the model first
 function preload() {
@@ -50,19 +39,19 @@ function setup() {
     buttonCreate.mousePressed(generateArt);
     buttonAgain = createButton('try again');
     buttonAgain.mousePressed(tryAgain);
-    buttonCreate.hide();
-    buttonAgain.hide();
-    img_not = createImg("bear_question_mark.jpg");
-    img_not.size(200, 350);
-    img_yes = createImg("mmbear_appears.jpg");
-    img_yes.size(200, 350);
-    img_yes.hide();
-    img_not.hide();
-    img_not.position(500, 100);
-    img_yes.position(500, 100);
-    classifyVideo();
-    flippedVideo = ml5.flipImage(video);
+    // buttonCreate.hide();
+    // buttonAgain.hide();
+    // img_not = createImg("bear_question_mark.jpg");
+    // img_not.size(200, 350);
+    // img_yes = createImg("mmbear_appears.jpg");
+    // img_yes.size(200, 350);
+    // img_yes.hide();
+    // img_not.hide();
+    // img_not.position(500, 100);
+    // img_yes.position(500, 100);
+    // flippedVideo = ml5.flipImage(video);
     // Start classifying
+    classifyVideo();
 
 }
 
@@ -74,7 +63,6 @@ function takeScreenShot() {
 }
 
 function draw() {
-
     frameRate(15);
     background(255);
     cuttedFeed = video.get(40, 0, 240, 240);
@@ -118,8 +106,9 @@ function tryAgain() {
 
 // Get a prediction for the current video frame
 function classifyVideo() {
-    flippedVideo = ml5.flipImage(video)
+    flippedVideo = ml5.flipImage(video);
     classifier.classify(flippedVideo, gotResult);
+    flippedVideo.remove();
 }
 
 // When we get a result
@@ -130,7 +119,6 @@ function gotResult(error, results) {
         return;
     }
     label = results[0].label;
-
     classifyVideo();
 }
 
