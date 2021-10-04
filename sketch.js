@@ -18,10 +18,18 @@ let imageModelGenre = 'https://teachablemachine.withgoogle.com/models/quZz9LyuP/
 let video;
 let flippedVideo;
 // To store the classification
-let label = "";
+let label = "loading...";
 let img_not;
 
 let img_yes;
+let button;
+let ifShot = false;
+let shotImage;
+let shotLabel = 'loading...';
+let cuttedFeed;
+let buttonCreate;
+let buttonAgain;
+let filterParam = false;
 
 // Load the model first
 function preload() {
@@ -29,11 +37,21 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(200, 100);
+    createCanvas(1280, 720);
     // Create the video
     video = createCapture(VIDEO);
-    video.size(320,240);
-    // video.hide();
+    video.size(320, 240);
+    video.hide();
+    // video = video.get(40,0,240,240);
+    button = createButton('take a shot!');
+    button.position(340, 510);
+    button.mousePressed(takeScreenShot);
+    buttonCreate = createButton('generate your art work!');
+    buttonCreate.mousePressed(generateArt);
+    buttonAgain = createButton('try again');
+    buttonAgain.mousePressed(tryAgain);
+    buttonCreate.hide();
+    buttonAgain.hide();
     img_not = createImg("bear_question_mark.jpg");
     img_not.size(200, 350);
     img_yes = createImg("mmbear_appears.jpg");
@@ -43,23 +61,57 @@ function setup() {
     img_not.position(500, 100);
     img_yes.position(500, 100);
     classifyVideo();
-    flippedVideo = ml5.flipImage(video)
+    flippedVideo = ml5.flipImage(video);
     // Start classifying
+
+}
+
+function takeScreenShot() {
+    ifShot = true;
+    shotImage = ml5.flipImage(video).get(40, 0, 240, 240);
+    classifier.classify(shotImage, gotResultForShot);
 
 }
 
 function draw() {
 
-    frameRate(30);
+    frameRate(15);
     background(255);
+    cuttedFeed = video.get(40, 0, 240, 240);
+    image(cuttedFeed, width - 320, 0);
     // Draw the video
     // image(flippedVideo, 0, 0);
-
+    if (ifShot) {
+        textSize(20);
+        textAlign(CENTER);
+        text(shotLabel === "loading..." ? shotLabel : "your are a:\n " + shotLabel + " album cover!", 100, 300);
+        image(shotImage, 0, 0);
+        buttonAgain.position(30, 510);
+        buttonCreate.position(100, 510);
+        buttonAgain.show();
+        buttonCreate.show();
+        if (filterParam !== false) {
+            filter(filterParam);
+        }
+    }
     // Draw the label
     // fill(255);
-    textSize(25);
+    textSize(23);
     textAlign(CENTER);
-    text("This is "+label, 100, 80);
+    text(label === "loading..." ? label : "👆This is " + label + ". \n If you are ready, take a shot!\n I will generate your album cover", width - 180, 300);
+}
+
+function generateArt() {
+    if(shotLabel==='Indie'){
+        filterParam='INVERT';
+    }
+}
+
+function tryAgain() {
+    ifShot = false;
+    buttonAgain.hide();
+    buttonCreate.hide();
+    // clearCanvas();
 }
 
 // Get a prediction for the current video frame
@@ -75,16 +127,23 @@ function gotResult(error, results) {
         console.error(error);
         return;
     }
-    // The results are in an array ordered by confidence.
-    // console.log(results[0]);
     label = results[0].label;
-    // if (label === "咩咩熊！") {
-    //     img_not.hide();
-    //     img_yes.show();
-    // } else {
-    //     img_not.show();
-    //     img_yes.hide();
-    // }
-    // Classifiy again!
+
     classifyVideo();
+}
+
+function gotResultForShot(error, results) {
+    // If there is an error
+    if (error) {
+        console.error(error);
+        return;
+    }
+    shotLabel = results[0].label;
+
+    classifyVideo();
+}
+
+function clearCanvas() {
+    rect(0, 0, canvas.width, canvas.height);
+    background(255);
 }
