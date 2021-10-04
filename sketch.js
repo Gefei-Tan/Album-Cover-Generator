@@ -65,7 +65,7 @@ function draw() {
         image(shotImage, (width - 360) / 2, 0);
 
         if (shotLabel === 'Indie') {
-            // randomNum > 0.5 ? filter(THRESHOLD, 0.42) : filter(INVERT);
+            randomNum > 0.5 ? filter(THRESHOLD, 0.42) : filter(INVERT);
         } else if (shotLabel === "Metal") {
             // filter(THRESHOLD, 0.45)
             filter(POSTERIZE, 2);
