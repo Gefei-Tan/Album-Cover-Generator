@@ -19,6 +19,10 @@ let buttonCreate;
 let buttonAgain;
 let filterParam = false;
 let flippedVideo;
+let ifGenerate = false;
+let randomNum;
+let nameInput;
+let name;
 
 // Load the model first
 function preload() {
@@ -26,38 +30,28 @@ function preload() {
 }
 
 function setup() {
+    nameInput = createInput();
+    nameInput.hide();
     createCanvas(1280, 720);
     // Create the video
     video = createCapture(VIDEO);
-    video.size(320, 240);
+    video.size(640, 360);
     video.hide();
     // video = video.get(40,0,240,240);
     button = createButton('take a shot!');
     button.mousePressed(takeScreenShot);
     button.hide();
-    buttonCreate = createButton('generate your art work!');
+    buttonCreate = createButton('Enter your album name and generate!');
     buttonCreate.mousePressed(generateArt);
     buttonAgain = createButton('try again');
     buttonAgain.mousePressed(tryAgain);
-    // buttonCreate.hide();
-    // buttonAgain.hide();
-    // img_not = createImg("bear_question_mark.jpg");
-    // img_not.size(200, 350);
-    // img_yes = createImg("mmbear_appears.jpg");
-    // img_yes.size(200, 350);
-    // img_yes.hide();
-    // img_not.hide();
-    // img_not.position(500, 100);
-    // img_yes.position(500, 100);
-    // flippedVideo = ml5.flipImage(video);
-    // Start classifying
     classifyVideo();
 
 }
 
 function takeScreenShot() {
     ifShot = true;
-    shotImage = ml5.flipImage(video).get(40, 0, 240, 240);
+    shotImage = ml5.flipImage(video).get(40, 0, 360, 360);
     classifier.classify(shotImage, gotResultForShot);
 
 }
@@ -65,43 +59,73 @@ function takeScreenShot() {
 function draw() {
     frameRate(15);
     background(255);
-    cuttedFeed = video.get(40, 0, 240, 240);
-    image(cuttedFeed, width - 320, 0);
-    button.position(width - 230, 500);
-    button.show();
-    // Draw the video
-    // image(flippedVideo, 0, 0);
-    if (ifShot) {
+    textSize(18);
+    if (ifGenerate) {
+
+        image(shotImage, (width - 360) / 2, 0);
+
+        if (shotLabel === 'Indie') {
+            // randomNum > 0.5 ? filter(THRESHOLD, 0.42) : filter(INVERT);
+        } else if (shotLabel === "Metal") {
+            // filter(THRESHOLD, 0.45)
+            filter(POSTERIZE, 2);
+        } else if (shotLabel === "Jazz") {
+            randomNum > 0.5 ? filter(GRAY) : filter(THRESHOLD, 0.5);
+        }
+        textAlign(LEFT);
+        textFont("Helvetica", 23);
+        text(name, (width - 360) / 2 + 20, 25); // left-upper Corner
+    } else {
+        // Cut the video stream to a square
+        cuttedFeed = video.get(140, 0, 360, 360);
+        image(cuttedFeed, width - 360, 0);
+        button.position(width - 220, 740);
+        button.show();
+        // Draw the video
+        // image(flippedVideo, 0, 0);
+        if (ifShot) {
+            textSize(18);
+            // textAlign(CENTER);
+            text(shotLabel === "loading..." ? shotLabel : "your are a:\n " + shotLabel + " \nalbum cover!", 140, 440);
+            nameInput.show();
+            nameInput.position(buttonAgain.x + 45, buttonAgain.y + 25);
+            image(shotImage, 0, 0);
+            buttonAgain.position(60, 630);
+            buttonCreate.position(130, 630);
+            buttonAgain.show();
+            buttonCreate.show();
+            if (filterParam !== false) {
+                filter(filterParam);
+            }
+        }
+        // Draw the label
+        // fill(255);
         textSize(20);
         textAlign(CENTER);
-        text(shotLabel === "loading..." ? shotLabel : "your are a:\n " + shotLabel + " album cover!", 110, 300);
-        image(shotImage, 0, 0);
-        buttonAgain.position(30, 510);
-        buttonCreate.position(100, 510);
-        buttonAgain.show();
-        buttonCreate.show();
-        if (filterParam !== false) {
-            filter(filterParam);
-        }
+        text(label === "loading..." ? label : "👆This is " + label + ". \n If you are ready, take a shot!\n I will generate your album cover", width - 180, 400);
+
     }
-    // Draw the label
-    // fill(255);
-    textSize(23);
-    textAlign(CENTER);
-    text(label === "loading..." ? label : "👆This is " + label + ". \n If you are ready, take a shot!\n I will generate your album cover", width - 180, 300);
+
 }
 
 function generateArt() {
-    // if(shotLabel==='Indie'){
-    //     filterParam='INVERT';
-    // }
+    name = nameInput.value();
+    nameInput.value("");
+    nameInput.hide();
+    randomNum = Math.random();
+    ifGenerate = true;
+    // buttonAgain.hide();
+    button.hide();
+    buttonCreate.hide();
+    cuttedFeed.hide();
 }
 
 function tryAgain() {
+    nameInput.hide();
     ifShot = false;
+    ifGenerate = false;
     buttonAgain.hide();
     buttonCreate.hide();
-    // clearCanvas();
 }
 
 // Get a prediction for the current video frame
