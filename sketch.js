@@ -44,8 +44,8 @@ function setup() {
     video.hide();
     // video = video.get(40,0,240,240);
     button = createButton('take a shot!');
-    button.position(340, 510);
     button.mousePressed(takeScreenShot);
+    button.hide();
     buttonCreate = createButton('generate your art work!');
     buttonCreate.mousePressed(generateArt);
     buttonAgain = createButton('try again');
@@ -79,12 +79,14 @@ function draw() {
     background(255);
     cuttedFeed = video.get(40, 0, 240, 240);
     image(cuttedFeed, width - 320, 0);
+    button.position(width - 230, 500);
+    button.show();
     // Draw the video
     // image(flippedVideo, 0, 0);
     if (ifShot) {
         textSize(20);
         textAlign(CENTER);
-        text(shotLabel === "loading..." ? shotLabel : "your are a:\n " + shotLabel + " album cover!", 100, 300);
+        text(shotLabel === "loading..." ? shotLabel : "your are a:\n " + shotLabel + " album cover!", 110, 300);
         image(shotImage, 0, 0);
         buttonAgain.position(30, 510);
         buttonCreate.position(100, 510);
@@ -102,9 +104,9 @@ function draw() {
 }
 
 function generateArt() {
-    if(shotLabel==='Indie'){
-        filterParam='INVERT';
-    }
+    // if(shotLabel==='Indie'){
+    //     filterParam='INVERT';
+    // }
 }
 
 function tryAgain() {
