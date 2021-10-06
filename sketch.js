@@ -2,7 +2,8 @@
 let classifier;
 // Model URL
 // let imageModelURL = 'https://teachablemachine.withgoogle.com/models/_6AZWTN_r/';
-let imageModelGenre = 'https://teachablemachine.withgoogle.com/models/quZz9LyuP/';
+let oldImageModelGenre = 'https://teachablemachine.withgoogle.com/models/quZz9LyuP/';
+let imageModelGenre = 'https://teachablemachine.withgoogle.com/models/iRfy2sJ7E/';
 // Video
 let video;
 // To store the classification
@@ -15,6 +16,7 @@ let shotLabel = 'loading...';
 let cuttedFeed;
 let buttonCreate;
 let buttonAgain;
+let buttonSave;
 let buttonFontColor;
 let buttonFontPos;
 let filterParam = false;
@@ -25,28 +27,34 @@ let nameInput;
 let name;
 let metalFont1;
 let metalFont2;
+let metalFont3;
+
 let indieFont1;
 let indieFont2;
 let indieFont3;
 
 let jazzFont1;
 let jazzFont2;
-
+let jazzFont3;
 let fontColor = 'black';
 let fontX;
 let fontY;
 let alignValue = 'LEFT';
 let infoPic;
+let mainCanvas;
 
 // Load the model first
 function preload() {
     metalFont1 = loadFont("Heartless.ttf");
     metalFont2 = loadFont("ZOMBIES REBORN.ttf");
+    metalFont3 = loadFont("Blood Thirst.ttf");
+
     indieFont1 = loadFont("Indie1.otf");
     indieFont2 = loadFont("Indie2.ttf");
     indieFont3 = loadFont("Indie3.ttf");
     jazzFont1 = loadFont("Jazz1.ttf");
-    jazzFont2 = loadFont("Jazz2.ttf");
+    jazzFont2 = loadFont("Basketball.otf");
+    jazzFont3 = loadFont("Jazz2.ttf");
 
     classifier = ml5.imageClassifier(imageModelGenre + 'model.json');
 }
@@ -55,7 +63,7 @@ function setup() {
     nameInput = createInput();
     // nameInput.size(18);
     nameInput.hide();
-    createCanvas(1280, 720);
+    mainCanvas = createCanvas(1280, 720);
     // Create the video
     video = createCapture(VIDEO);
     video.size(640, 360);
@@ -69,8 +77,11 @@ function setup() {
     buttonAgain = createButton('try again');
     buttonAgain.mousePressed(tryAgain);
     buttonCreate.hide();
+    buttonSave = createButton('save my precious art');
+    buttonSave.mousePressed(saveMyArt);
+    buttonSave.hide();
     buttonAgain.hide();
-    buttonFontColor = createButton('Change Text Color');
+    buttonFontColor = createButton('Change Text Color\n(try this if no text)');
     buttonFontColor.mousePressed(changeFontColor);
     buttonFontColor.hide();
     buttonFontPos = createButton('Change Text Position');
@@ -85,7 +96,8 @@ function setup() {
 function takeScreenShot() {
     ifShot = true;
     shotImage = video.get(40, 0, 360, 360);
-    classifier.classify(shotImage, gotResultForShot);
+    shotLabel = label;
+    // classifier.classify(shotImage, gotResultForShot);
     // cuttedFeed.hide();
 }
 
@@ -96,7 +108,7 @@ function changeFontColor() {
 }
 
 function changeFontPosition() {
-    if (fontX === ((width -360) / 2 + 20)) {
+    if (fontX === ((width - 360) / 2 + 20)) {
         fontX += 320;
         alignValue = 'RIGHT';
     } else {
@@ -111,7 +123,10 @@ function draw() {
     background(255);
     textSize(18);
     if (ifGenerate) {
+        buttonSave.position((width - 360) / 2 + 10, 710);
         buttonAgain.position((width - 360) / 2 + 10, 670);
+        buttonAgain.show();
+        buttonSave.show();
         buttonFontColor.position((width - 360) / 2 + 240, 670);
         buttonFontColor.show();
         buttonFontPos.position((width - 360) / 2 + 90, 670);
@@ -119,21 +134,27 @@ function draw() {
         image(shotImage, (width - 360) / 2, 0);
 
         if (shotLabel === 'Indie') {
-            textSize(42);
-            randomNum > 0.33 && randomNum < 0.66 ? textFont(indieFont1) : textFont(indieFont2);
+            textSize(50);
+            randomNum > 0.33 && randomNum < 0.66 ? textFont(indieFont1) : randomNum < 0.32 ? textFont(indieFont3) : textFont(indieFont2);
             randomNum > 0.5 ? filter(THRESHOLD, 0.42) : filter(POSTERIZE, 2);
         } else if (shotLabel === "Metal") {
-            textSize(50);
+            textSize(52);
             // filter(THRESHOLD, 0.45)
-            randomNum > 0.5 ? textFont(metalFont1) : textFont(metalFont2);
+            randomNum > 0.33 && randomNum < 0.66 ? textFont(metalFont1) : randomNum < 0.32 ? textFont(metalFont2) : textFont(metalFont3);
             randomNum > 0.5 ? filter(INVERT) : filter(POSTERIZE, 2);
         } else if (shotLabel === "Jazz") {
             textSize(50);
-            randomNum > 0.5 ? textFont(jazzFont1) : textFont(jazzFont2);
-            randomNum > 0.5 ? filter(THRESHOLD, 0.42) : filter(GRAY);
+            randomNum > 0.33 && randomNum < 0.66 ? textFont(jazzFont1) : randomNum < 0.32 ? textFont(jazzFont2) : textFont(jazzFont3);
+            filter(GRAY);
         }
+        fill(fontColor);
         textAlign(alignValue === 'LEFT' ? LEFT : RIGHT);
         text(name, fontX, fontY); // left-upper Corner
+        textAlign(CENTER);
+        textFont('fontRegular');
+        textSize(16);
+        fill("black");
+        text("👆Here is your " + shotLabel + " album cover!", 600, 400);
     } else {
         // Cut the video stream to a square
         cuttedFeed = video.get(40, 0, 360, 360);
@@ -148,11 +169,10 @@ function draw() {
             text(shotLabel === "loading..." ? shotLabel : "This is your:\n " + shotLabel + " \nalbum cover!", 140, 440);
             nameInput.show();
             image(shotImage, 0, 0);
-            buttonAgain.position(60, 630);
-            buttonCreate.position(130, 630);
-            nameInput.position(buttonCreate.x + 44, buttonCreate.y + 25);
+            // buttonAgain.position(60, 630);
+            buttonCreate.position(10, 630);
+            nameInput.position(buttonCreate.x, buttonCreate.y + 25);
 
-            // buttonAgain.show();
             buttonCreate.show();
             if (filterParam !== false) {
                 filter(filterParam);
@@ -169,6 +189,10 @@ function draw() {
 
 }
 
+function saveMyArt() {
+    saveCanvas(mainCanvas, 'my_album_cover', 'jpg');
+}
+
 function generateArt() {
     name = nameInput.value();
     nameInput.value("");
@@ -183,6 +207,7 @@ function generateArt() {
 
 // Basically reset everything
 function tryAgain() {
+    buttonSave.hide();
     buttonFontColor.hide();
     buttonFontPos.hide();
     fontColor = 'black';
