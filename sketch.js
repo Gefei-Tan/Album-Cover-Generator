@@ -39,7 +39,7 @@ let jazzFont3;
 let fontColor = 'black';
 let fontX;
 let fontY;
-let alignValue = 'LEFT';
+let alignValue = 'LEFT';2
 let infoPic;
 let mainCanvas;
 
@@ -51,7 +51,7 @@ function preload() {
 
     indieFont1 = loadFont("Indie1.otf");
     indieFont2 = loadFont("Indie2.ttf");
-    indieFont3 = loadFont("Indie3.ttf");
+    indieFont3 = loadFont("Indie4.ttf");
     jazzFont1 = loadFont("Jazz1.ttf");
     jazzFont2 = loadFont("Basketball.otf");
     jazzFont3 = loadFont("Jazz2.ttf");
@@ -123,20 +123,20 @@ function draw() {
     background(255);
     textSize(18);
     if (ifGenerate) {
-        buttonSave.position((width - 360) / 2 + 10, 710);
-        buttonAgain.position((width - 360) / 2 + 10, 670);
+        buttonSave.position((width - 360) / 2 + 10, 710 + 50);
+        buttonAgain.position((width - 360) / 2 + 10, 670 + 50);
         buttonAgain.show();
         buttonSave.show();
-        buttonFontColor.position((width - 360) / 2 + 240, 670);
+        buttonFontColor.position((width - 360) / 2 + 240, 670 + 50);
         buttonFontColor.show();
-        buttonFontPos.position((width - 360) / 2 + 90, 670);
+        buttonFontPos.position((width - 360) / 2 + 90, 670 + 50);
         buttonFontPos.show();
         image(shotImage, (width - 360) / 2, 0);
 
         if (shotLabel === 'Indie') {
             textSize(50);
-            randomNum > 0.33 && randomNum < 0.66 ? textFont(indieFont1) : randomNum < 0.32 ? textFont(indieFont3) : textFont(indieFont2);
-            randomNum > 0.5 ? filter(THRESHOLD, 0.42) : filter(POSTERIZE, 2);
+            randomNum > 0.33 && randomNum < 0.66 ? textFont(indieFont3) : randomNum < 0.32 ? textFont(indieFont1) : textFont(indieFont2);
+            filter(THRESHOLD, 0.42);
         } else if (shotLabel === "Metal") {
             textSize(52);
             // filter(THRESHOLD, 0.45)
@@ -159,7 +159,7 @@ function draw() {
         // Cut the video stream to a square
         cuttedFeed = video.get(40, 0, 360, 360);
         image(cuttedFeed, width - 360, 0);
-        shotButton.position(width - 220, 770);
+        shotButton.position(width - 220, 830);
         shotButton.show();
         // Draw the video
         // image(flippedVideo, 0, 0);
@@ -170,8 +170,8 @@ function draw() {
             nameInput.show();
             image(shotImage, 0, 0);
             // buttonAgain.position(60, 630);
-            buttonCreate.position(10, 630);
-            nameInput.position(buttonCreate.x, buttonCreate.y + 25);
+            buttonCreate.position(10, 660);
+            nameInput.position(buttonCreate.x, buttonCreate.y + 28);
 
             buttonCreate.show();
             if (filterParam !== false) {
