@@ -1,5 +1,5 @@
 # Album-Generator
-An awesome online Album cover generator made with teachable machine, ml5 and p5
+An awesome online Album cover generator made with teachable machine, ml5 and p5.
 
 ## How to Use
 Take a photo with your camera, the system will tell you which genre she thinks this shot is. 
