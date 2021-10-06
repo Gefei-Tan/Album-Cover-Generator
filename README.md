@@ -12,4 +12,4 @@ Then, you can enter your album's name and generate your album cover! Enjoy.
 ## Why to Use
 Because musicians are bored and album cover designers are overrated.
 
-#### We only do Indie, Jazz and Metal. Yeah, bite me.
+#### We only do Indie, Jazz and Metal. Yeah, sue me.
