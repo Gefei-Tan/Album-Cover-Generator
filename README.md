@@ -1,4 +1,4 @@
-# Album-Generator
+# Album-Cover-Generator
 An awesome online Album cover generator made with teachable machine, ml5 and p5.
 
 ## How to Use
