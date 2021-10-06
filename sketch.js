@@ -36,6 +36,7 @@ let fontColor = 'black';
 let fontX;
 let fontY;
 let alignValue = 'LEFT';
+let infoPic;
 
 // Load the model first
 function preload() {
@@ -85,9 +86,9 @@ function takeScreenShot() {
     ifShot = true;
     shotImage = video.get(40, 0, 360, 360);
     classifier.classify(shotImage, gotResultForShot);
-    cuttedFeed.hide();
-
+    // cuttedFeed.hide();
 }
+
 
 function changeFontColor() {
     fontColor = fontColor === 'black' ? 'white' : fontColor === 'white' ? 'red' : fontColor === 'red' ? 'cyan' : 'black';
@@ -95,7 +96,7 @@ function changeFontColor() {
 }
 
 function changeFontPosition() {
-    if (fontX === ((width - 360) / 2 + 20)) {
+    if (fontX === ((width -360) / 2 + 20)) {
         fontX += 320;
         alignValue = 'RIGHT';
     } else {
@@ -106,7 +107,7 @@ function changeFontPosition() {
 }
 
 function draw() {
-    frameRate(15);
+    frameRate(24);
     background(255);
     textSize(18);
     if (ifGenerate) {
@@ -128,7 +129,6 @@ function draw() {
             randomNum > 0.5 ? filter(INVERT) : filter(POSTERIZE, 2);
         } else if (shotLabel === "Jazz") {
             textSize(50);
-            // randomNum > 0.5 ? filter(GRAY) : filter(THRESHOLD, 0.5);
             randomNum > 0.5 ? textFont(jazzFont1) : textFont(jazzFont2);
             randomNum > 0.5 ? filter(THRESHOLD, 0.42) : filter(GRAY);
         }
@@ -147,11 +147,12 @@ function draw() {
             // textAlign(CENTER);
             text(shotLabel === "loading..." ? shotLabel : "This is your:\n " + shotLabel + " \nalbum cover!", 140, 440);
             nameInput.show();
-            nameInput.position(buttonAgain.x + 45, buttonAgain.y + 25);
             image(shotImage, 0, 0);
             buttonAgain.position(60, 630);
             buttonCreate.position(130, 630);
-            buttonAgain.show();
+            nameInput.position(buttonCreate.x + 44, buttonCreate.y + 25);
+
+            // buttonAgain.show();
             buttonCreate.show();
             if (filterParam !== false) {
                 filter(filterParam);
@@ -161,6 +162,7 @@ function draw() {
         // fill(255);
         textSize(20);
         textAlign(CENTER);
+        // really unfortunate formatting...
         text(label === "loading..." ? label : ("👆\nI think... This is " + ((label === "Indie") ? "an " : ("a ")) + label + " album cover! \n If you are ready, take a shot!\n I will generate your album cover."), width - 180, 410);
 
     }
@@ -176,7 +178,7 @@ function generateArt() {
     // buttonAgain.hide();
     shotButton.hide();
     buttonCreate.hide();
-    cuttedFeed.hide();
+    // cuttedFeed.hide();
 }
 
 // Basically reset everything
@@ -212,13 +214,11 @@ function gotResult(error, results) {
 }
 
 function gotResultForShot(error, results) {
-    // If there is an error
     if (error) {
         console.error(error);
         return;
     }
     shotLabel = results[0].label;
-
     // classifyVideo();
 }
 
