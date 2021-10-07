@@ -3,7 +3,7 @@ An awesome online Album cover generator made with teachable machine, ml5 and p5.
 
 ## Where to Use
 try here:
-https://mm-bear.web.app/
+https://tangerine-album-generator.web.app
 
 ## How to Use
 Take a photo with your camera, the system will tell you which genre she thinks this shot is. 
